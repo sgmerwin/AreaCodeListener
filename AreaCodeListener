@@ -1,0 +1,93 @@
+package com.skilldistillery.mapinterface.labs;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+public class AreaCodeLister {
+  private Map<String, String> areaCodes;
+  private Map<String, String> abbreviations;
+  private Map< String, String> editMap = new HashMap<>();
+
+  public AreaCodeLister() {
+    populateAreaCodes();
+    populateAbbreviations();
+    print();
+  }
+
+  private void populateAreaCodes() {
+    areaCodes = new HashMap<>();
+    try (BufferedReader in = new BufferedReader(new FileReader(
+        "/Users/steve/Documents/javafx/java2/MapInterface/areacodes.txt"))) {
+      String line = null;
+      ArrayList arr1 = new ArrayList();
+      ArrayList arr2 = new ArrayList();
+      while ((line = in.readLine()) != null) {
+        //System.out.println(line);
+        // Add code to parse out the area code and abbreviation
+        // from each line. Then add them to the areaCodes Map.
+        String[] parts = line.split("\\s+");
+        areaCodes.put(parts[0], parts[1]);
+      }
+    }
+    catch (IOException e) {
+      System.err.println(e);
+      System.exit(1);
+    }
+    //System.out.println(areaCodes.toString());
+
+  }//method
+
+  private void populateAbbreviations() {
+    abbreviations = new HashMap<>();
+
+    try (BufferedReader in = new BufferedReader(new FileReader(
+        "/Users/steve/Documents/javafx/java2/MapInterface/abbreviations.txt"))) {
+
+      String line = null;
+      while ((line = in.readLine()) != null) {
+        String[] parts = line.split("\\s+");
+        String temp = "";
+        for(int i = 0; i < parts.length -1; i++){
+         temp = temp + parts[i];
+        }
+        abbreviations.put(parts[parts.length-1],temp);
+      }
+      //System.out.println(abbreviations.toString());
+    }
+    catch (IOException e) {
+      System.err.println(e);
+      System.exit(1);
+    }
+  }//method
+
+  private void print() {
+    this.populateAreaCodes();
+    this.populateAbbreviations();
+    String temp = "";
+    String temp2 = "";
+    for(String name : this.areaCodes.keySet()){
+      temp = this.areaCodes.get(name);
+      temp2 = this.abbreviations.get(temp);
+      this.editMap.put(name,temp2);
+    }
+    for(String name : this.editMap.keySet()){
+      System.out.print(name+"  ");
+      System.out.println(this.editMap.get(name));
+    }
+    //System.out.print(this.editMap.toString());
+    // Add code to display the area code and the full state name
+    // associated with it.
+  }//method
+
+  public static void main(String[] args) {
+
+    AreaCodeLister ac = new AreaCodeLister();
+    ac.print();
+    
+  }//main
+}//class
